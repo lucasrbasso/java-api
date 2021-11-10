@@ -1,6 +1,8 @@
 package com.gvendas.gestaovendas.controllers;
 
+import com.gvendas.gestaovendas.dto.cliente.ClienteRequestDTO;
 import com.gvendas.gestaovendas.dto.cliente.ClienteResponseDTO;
+import com.gvendas.gestaovendas.dto.produto.ProdutoResponseDTO;
 import com.gvendas.gestaovendas.entidades.Cliente;
 import com.gvendas.gestaovendas.entidades.Produto;
 import com.gvendas.gestaovendas.services.ClienteServico;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,8 +47,24 @@ public class ClienteControlador {
 
   @ApiOperation(value="Cadastrar", nickname = "salvarCliente")
   @PostMapping()
-  public ResponseEntity<ClienteResponseDTO> salvar(@RequestBody Cliente cliente) {
-    Cliente clienteReturn = this.clienteServico.salvar(cliente);
-    return ResponseEntity.status(HttpStatus.CREATED).body(ClienteResponseDTO.converterParaClienteDTO(cliente));
+  public ResponseEntity<ClienteResponseDTO> salvar(@RequestBody @Valid ClienteRequestDTO clienteDto) {
+    Cliente clienteReturn = this.clienteServico.salvar(clienteDto.converterParaEntidade());
+    return ResponseEntity.status(HttpStatus.CREATED).body(ClienteResponseDTO.converterParaClienteDTO(clienteReturn));
+  }
+
+  @ApiOperation(value="Atualizar", nickname = "atualizarCliente")
+  @PutMapping("/{id}")
+  public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteRequestDTO clienteDto) {
+    Cliente clienteAtualizado = this.clienteServico.atualizar(
+      id, clienteDto.converterParaEntidade(id)
+    );
+    return ResponseEntity.ok().body(ClienteResponseDTO.converterParaClienteDTO(clienteAtualizado));
+  }
+
+  @ApiOperation(value="Deletar", nickname = "deletarCliente")
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deletar(@PathVariable Long id) {
+    this.clienteServico.deletar(id);
   }
 }

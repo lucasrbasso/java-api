@@ -23,6 +23,7 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
   private static final String CONSTANT_VALIDATION_NOT_BLANK = "NotBlank";
   private static final String CONSTANT_VALIDATION_MIN_LENGTH = "Length";
   private static final String CONSTANT_VALIDATION_NOT_NULL = "NotNull";
+  private static final String CONSTANT_VALIDATION_NOT_PATTERN = "Pattern";
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -57,6 +58,9 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
           Objects.requireNonNull(fieldError.getArguments())[2],
           fieldError.getArguments()[1])
       );
+    }
+    if (Objects.equals(fieldError.getCode(), CONSTANT_VALIDATION_NOT_PATTERN)) {
+      return Objects.requireNonNull(fieldError.getDefaultMessage()).concat(" formato inválido.");
     }
     return fieldError.toString();
   }
