@@ -67,7 +67,11 @@ public class ProdutoServico {
         }
     }
 
-    private Produto validarProdutoExiste(Long codigoProduto) {
+    protected void atualizarQuantidadeEmEstoque(Produto produto) {
+        produtoRepositorio.save(produto);
+    }
+
+    protected Produto validarProdutoExiste(Long codigoProduto) {
         Optional<Produto> produtoEncontrado = this.produtoRepositorio.findById(codigoProduto);
 
         if(produtoEncontrado.isEmpty()) {

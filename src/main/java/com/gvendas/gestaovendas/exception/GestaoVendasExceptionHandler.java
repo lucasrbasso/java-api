@@ -24,6 +24,7 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
   private static final String CONSTANT_VALIDATION_MIN_LENGTH = "Length";
   private static final String CONSTANT_VALIDATION_NOT_NULL = "NotNull";
   private static final String CONSTANT_VALIDATION_NOT_PATTERN = "Pattern";
+  private static final String CONSTANT_VALIDATION_MIN = "Min";
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -61,6 +62,10 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
     }
     if (Objects.equals(fieldError.getCode(), CONSTANT_VALIDATION_NOT_PATTERN)) {
       return Objects.requireNonNull(fieldError.getDefaultMessage()).concat(" formato inválido.");
+    }
+    if (Objects.equals(fieldError.getCode(), CONSTANT_VALIDATION_MIN)) {
+      return Objects.requireNonNull(fieldError.getDefaultMessage())
+              .concat(String.format(" deve ser maior ou igual a %s", Objects.requireNonNull(fieldError.getArguments())[1]));
     }
     return fieldError.toString();
   }
